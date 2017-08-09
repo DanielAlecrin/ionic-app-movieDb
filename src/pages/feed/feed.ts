@@ -1,3 +1,4 @@
+import { MoovieProvider } from './../../providers/moovie/moovie';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
@@ -12,6 +13,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 @Component({
   selector: 'page-feed',
   templateUrl: 'feed.html',
+  providers: [MoovieProvider]
 })
 export class FeedPage {
 
@@ -24,11 +26,25 @@ export class FeedPage {
     timeComments: '11h ago'
 
   };
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+
+  public lista_filmes = new Array<any>();
+
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private moovie: MoovieProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad FeedPage');
+    this.moovie.getLatestMovies().subscribe(
+      data => {
+        const response = (data as any);
+        const obj_retorno = JSON.parse(response._body);
+        this.lista_filmes = obj_retorno.results;
+        console.log(obj_retorno);
+
+      }, error => { console.log(error)}
+    );
+
   }
 
 }
